@@ -38,7 +38,7 @@ class NagiosUsers
   def load_encrypted_databag(user_databag)
     Chef::DataBag.load(user_databag).each do |u, _|
       d = Chef::EncryptedDataBagItem.load(user_databag, u)
-      @users << d unless d['nagios'].nil? || d['nagios']['email'].nil?
+      @users << d
     end
   rescue Net::HTTPServerException
     fail_search(user_databag)
@@ -46,7 +46,7 @@ class NagiosUsers
 
   def search_databag(user_databag, group)
     Chef::Search::Query.new.search(user_databag, "groups:#{group} NOT action:remove") do |d|
-      @users << d unless d['nagios'].nil? || d['nagios']['email'].nil?
+      @users << d
     end
   rescue Net::HTTPServerException
     fail_search(user_databag)
